@@ -68,6 +68,13 @@ const Items = ({ isLoggedIn = false }) => {
     <>
       <Header pageTitle="Reported Items" isLoggedIn={isLoggedIn} />
       <main id="main-content">
+        {isLoggedIn && (
+          <div className="reportItemAction">
+            <Link to="/reportNewItem" className="reportItemBtn">
+              Report an Item
+            </Link>
+          </div>
+        )}
         <section aria-label="Filter and search reported items">
           <div className="LostFoundButtonContainer">
             <button
