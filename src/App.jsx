@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Routes, Route } from "react-router-dom"
+import React, { useState } from 'react';
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Home } from './pages/home';
 import NewItemPage from './pages/NewItemPage';
 import { Index } from './pages/indexPage';
@@ -23,7 +23,7 @@ function App() {
   const [token, setToken] = useState("");
   const [profileImgUrl, setProfileImgUrl] = useState("");
   const [userId, setUserId] = useState("");
-  // This function sets all of the above states based on the user login input. Stored profileInfo is coming from the backend.
+
   function updateUserInfo(profileInfo) {
 
     if (profileInfo.username) {
@@ -47,7 +47,7 @@ function App() {
 
     {
       path: "/",
-      element: <Home />
+      element: <Home isLoggedIn={!!token} />
     },
     {
       path: "/LoginPage",
@@ -55,19 +55,19 @@ function App() {
     },
     {
       path: "/indexPage",
-      element: <Index />
+      element: <Index isLoggedIn={!!token} />
     },
     {
       path: "/items/:id",
-      element: <ItemDetails token={token} />
+      element: <ItemDetails token={token} isLoggedIn={!!token} />
     },
     {
       path: "/reportedItems",
-      element: <Items />
+      element: <Items isLoggedIn={!!token} />
     },
     {
       path: "/reportNewItem",
-      element: <NewItemPage />
+      element: <NewItemPage isLoggedIn={!!token} />
     },
     {
       path: "/SignUpPage",
@@ -75,11 +75,11 @@ function App() {
     },
     {
       path: "/items/:id/claim",
-      element: <ItemClaim />
+      element: <ItemClaim isLoggedIn={!!token} />
     },
     {
       path: "/profilePage",
-      element: <ProfilePage />
+      element: <ProfilePage isLoggedIn={!!token} />
     },
     {
       path: "*",
@@ -89,6 +89,9 @@ function App() {
 
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
 
       <ToastContainer
         position="bottom-center"
@@ -101,11 +104,11 @@ function App() {
         draggable
         pauseOnHover
         theme="light"
-        transition:Bounce
+        role="alert"
+        aria-live="assertive"
       />
 
-      <RouterProvider router={router}>router </RouterProvider>
-
+      <RouterProvider router={router} />
     </div>
   );
 }

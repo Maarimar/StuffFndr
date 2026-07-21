@@ -2,13 +2,15 @@ import React from "react";
 import './header.css';
 import HamburgerMenu from "./HamburgerMenu";
 
-const Header = ({pageTitle}) => {
-    return(
-        
-        <div className='header-container'>
-            <HamburgerMenu/>
-            <h1 className='logo'>{pageTitle || "StuffFindr"}</h1>
-        </div> 
+const Header = ({ pageTitle, isLoggedIn = false }) => {
+    return (
+        <header className="header-container">
+            <div className="header-side">
+                {isLoggedIn && <HamburgerMenu />}
+            </div>
+            <p className="logo">{pageTitle || "StuffFindr"}</p>
+            <div className="header-side header-side--spacer" aria-hidden="true" />
+        </header>
     )
 }
 

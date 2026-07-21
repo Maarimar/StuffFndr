@@ -8,7 +8,6 @@ import { eye } from 'react-icons-kit/feather/eye';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-// Pass in setUserInfo as a prop from App.js. setUserInfo will be set based on user login input.
 function LoginPage({ setUserInfo }) {
 
     const [password, setPassword] = useState("");
@@ -16,11 +15,6 @@ function LoginPage({ setUserInfo }) {
     const [type, setType] = useState('password');
     const [icon, setIcon] = useState(eyeOff);
     const navigateTo = useNavigate();
-
-    const handlePasswordChange = (e) => {
-        const newPassword = e.target.value;
-        setPassword(newPassword);
-    };
 
     const handleToggle = () => {
         if (type === 'password') {
@@ -46,65 +40,72 @@ function LoginPage({ setUserInfo }) {
 
             if (response.ok) {
                 const body = await response.json()
-                // May not need to console.log below. Check with Roy.
-                console.log("from LoginPage", body)
                 setUserInfo(body)
                 navigateTo("/reportedItems");
             } else {
                 const errorMessage = await response.text();
                 if (errorMessage.includes('username')) {
-                    toast("Username or Password is incorrect", {});
+                    toast.error("Username or password is incorrect");
                 }
             }
 
         } catch (error) {
-            console.error('Login failed:', error.message);
+            toast.error('Login failed. Please try again.');
         }
     };
 
     return (
-        <div>
-            <Header />
-            <p className="greetingContainer" >Welcome Back!</p>
-            <div className="LoginPageContainer">
-                <h2 className="LoginHeader">Log In</h2>
+        <>
+            <Header isLoggedIn={false} />
+            <main id="main-content">
+                <p className="greetingContainer">Welcome Back!</p>
+                <div className="LoginPageContainer">
+                    <h1 className="LoginHeader">Log In</h1>
 
-                <div className="userNameContainer">
-                    <label className="fieldLabel" htmlFor="userName">Username</label>
-                    <input
-                        className="inputField"
-                        type='text'
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
+                    <form className="loginForm" onSubmit={handleLogin}>
+                        <div className="loginField">
+                            <label className="fieldLabel" htmlFor="username">Username</label>
+                            <input
+                                className="inputField"
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                autoComplete="username"
+                                required
+                            />
+                        </div>
+                        <div className="loginField">
+                            <label className="fieldLabel" htmlFor="password">Password</label>
+                            <div className="passwordInputContainer">
+                                <input
+                                    className="inputField inputField--password"
+                                    type={type}
+                                    id="password"
+                                    name="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    autoComplete="current-password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="eye"
+                                    onClick={handleToggle}
+                                    aria-label={type === 'password' ? 'Show password' : 'Hide password'}
+                                    aria-pressed={type === 'text'}
+                                >
+                                    <Icon className="eyeIcon" icon={icon} size={25} aria-hidden="true" />
+                                </button>
+                            </div>
+                        </div>
+                        <p className="signUpBlurb">Don't have an account? <Link to="/SignUpPage">Sign up</Link></p>
+                        <button className="logInBtn" type="submit">Log In</button>
+                    </form>
                 </div>
-                <div className="passwordContainer">
-                    <label className="fieldLabel" htmlFor="password">Password</label>
-                    <div className='passwordInputContainer'>
-                        <input
-                            className="inputField"
-                            type={type}
-                            name="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            autoComplete="current-password"
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleLogin(e)
-                                }
-                            }}
-                        />
-                        <span className="eye" onClick={handleToggle}>
-                            <Icon className="eyeIcon" icon={icon} size={25} />
-                        </span>
-                    </div>
-                </div>
-                <p className="signUpBlurb">Don't have an account? <Link to="/SignUpPage">Sign up</Link></p>
-                <button className="logInBtn" onClick={handleLogin}>Log In</button>
-            </div>
-        </div>
+            </main>
+        </>
     );
 }
 

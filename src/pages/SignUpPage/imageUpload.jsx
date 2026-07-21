@@ -8,11 +8,11 @@ const ImageUpload = () => {
     const [photoURL, setPhotoURL] = useState(() => {
         return localStorage.getItem('photoURL') || DefaultImage;
     });
+    const [hasUploadedPhoto, setHasUploadedPhoto] = useState(false);
 
     const fileUploadRef = useRef();
 
-    const handleImageUpload = (event) => {
-        event.preventDefault();
+    const handleImageUpload = () => {
         fileUploadRef.current.click()
     }
 
@@ -20,49 +20,53 @@ const ImageUpload = () => {
         const uploadedFile = fileUploadRef.current.files[0];
         const cachedURL = URL.createObjectURL(uploadedFile);
         setPhotoURL(cachedURL);
+        setHasUploadedPhoto(true);
         localStorage.setItem('photoURL', cachedURL);
     }
 
     const handleImageError = () => {
         setPhotoURL(DefaultImage);
+        setHasUploadedPhoto(false);
     };
 
     useEffect(() => {
         return () => {
-            URL.revokeObjectURL(photoURL);
+            if (hasUploadedPhoto) {
+                URL.revokeObjectURL(photoURL);
+            }
         };
-    }, [photoURL]);
+    }, [photoURL, hasUploadedPhoto]);
 
 
     return (
         <div className="defaultImgContainer">
             <img
                 src={photoURL}
-                alt="Default Profile Photo"
+                alt={hasUploadedPhoto ? "Uploaded profile photo" : "Default profile photo"}
                 className="defaultImg"
                 onError={handleImageError}
             />
-            <form id="form" encType='multipart/form-data'>
-                <button
-                    className='uploadBtn'
-                    type='submit'
-                    onClick={handleImageUpload}
-                >
-
-                    <img
-                        src={EditIcon}
-                        alt="Edit"
-                        className="editBtn"
-                    />
-                </button>
-                <input
-                    type="file"
-                    id="file"
-                    ref={fileUploadRef}
-                    onChange={uploadImageDisplay}
-                    hidden
+            <button
+                className='uploadBtn'
+                type='button'
+                onClick={handleImageUpload}
+                aria-label="Change profile photo"
+            >
+                <img
+                    src={EditIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className="editBtn"
                 />
-            </form>
+            </button>
+            <input
+                type="file"
+                id="profile-photo"
+                ref={fileUploadRef}
+                onChange={uploadImageDisplay}
+                accept="image/*"
+                className="sr-only"
+            />
         </div>
     )
 }
