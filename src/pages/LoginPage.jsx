@@ -6,12 +6,12 @@ import { Icon } from 'react-icons-kit';
 import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { eye } from 'react-icons-kit/feather/eye';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 function LoginPage({ setUserInfo }) {
 
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
+    const [loginError, setLoginError] = useState("");
     const [type, setType] = useState('password');
     const [icon, setIcon] = useState(eyeOff);
     const navigateTo = useNavigate();
@@ -28,6 +28,7 @@ function LoginPage({ setUserInfo }) {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoginError("");
 
         try {
             const response = await fetch('http://localhost:8000/api/v1/users/login', {
@@ -41,16 +42,13 @@ function LoginPage({ setUserInfo }) {
             if (response.ok) {
                 const body = await response.json()
                 setUserInfo(body)
-                navigateTo("/reportedItems");
+                navigateTo("/lostItems");
             } else {
-                const errorMessage = await response.text();
-                if (errorMessage.includes('username')) {
-                    toast.error("Username or password is incorrect");
-                }
+                setLoginError("Username or password is incorrect");
             }
 
         } catch (error) {
-            toast.error('Login failed. Please try again.');
+            setLoginError("Login failed. Please try again.");
         }
     };
 
@@ -100,6 +98,9 @@ function LoginPage({ setUserInfo }) {
                                 </button>
                             </div>
                         </div>
+                        {loginError && (
+                            <p className="loginError" role="alert">{loginError}</p>
+                        )}
                         <p className="signUpBlurb">Don't have an account? <Link to="/SignUpPage">Sign up</Link></p>
                         <button className="logInBtn" type="submit">Log In</button>
                     </form>

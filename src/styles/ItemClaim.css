@@ -81,3 +81,10 @@
 .submitClaimButton:hover {
   background: var(--color-brand-hover);
 }
+
+.claimMessage {
+  margin-top: var(--space-md);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}

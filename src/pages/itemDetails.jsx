@@ -4,13 +4,9 @@ import placeHolder from "../assets/placeholder.svg";
 import mapPin from "../assets/mapPin.svg";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { getReporterUsername } from "../util/getReporterUsername";
 
-const theToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjJkNzAzZWJhMzJmNDFjNzg5NTIwMWIiLCJ1c2VybmFtZSI6IlRyZWVTdGFuZCIsImlhdCI6MTcxNDI2OTgwMCwiZXhwIjoxNzE2ODYxODAwfQ.v1kpMaryjcNcDq-3QT-rHXGbT-RhF2UX0oFyq7he4Pw";
-const token = encodeURIComponent(theToken);
-
-function ItemDetails({ isLoggedIn = false }) {
+function ItemDetails({ token = "", isLoggedIn = false }) {
   const { id } = useParams();
   const [currentItem, setCurrentItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,14 +30,14 @@ function ItemDetails({ isLoggedIn = false }) {
         const itemDetails = await response.json();
         setCurrentItem(itemDetails.item);
       } catch (error) {
-        toast.error("Failed to fetch item details");
+        setCurrentItem(null);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchItemDetails();
-  }, [id]);
+  }, [id, token]);
 
   if (isLoading) {
     return (
@@ -60,13 +56,16 @@ function ItemDetails({ isLoggedIn = false }) {
         <Header pageTitle="Item Details" isLoggedIn={isLoggedIn} />
         <main id="main-content">
           <p role="alert">Item not found.</p>
-          <Link to="/reportedItems">Back to reported items</Link>
+          <Link to="/lostItems">Back to lost items</Link>
         </main>
       </>
     );
   }
 
   const statusLabel = currentItem.lost ? "Lost" : "Found";
+  const reporterUsername = getReporterUsername(currentItem);
+  const backLinkPath = currentItem.lost ? "/lostItems" : "/foundItems";
+  const backLinkLabel = currentItem.lost ? "Back to lost items" : "Back to found items";
 
   return (
     <>
@@ -96,10 +95,18 @@ function ItemDetails({ isLoggedIn = false }) {
             </dd>
           </div>
           <div className="itemDetailRow">
+            <dt className="descriptionDetail">Reported By</dt>
+            <dd className="descriptionValue">{reporterUsername || "Unknown"}</dd>
+          </div>
+          <div className="itemDetailRow">
             <dt className="descriptionDetail">Status</dt>
             <dd className="lostFound descriptionValue">{statusLabel}</dd>
           </div>
         </dl>
+
+        <p className="backToItemsLink">
+          <Link to={backLinkPath}>{backLinkLabel}</Link>
+        </p>
 
         <div className="claimButtonContainer">
           <Link to={`/items/${currentItem._id}/claim`} className="button">

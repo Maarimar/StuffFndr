@@ -38,7 +38,8 @@ const HamburgerMenu = () => {
       </button>
       <ul id={MENU_ID} className={`list ${isOpen ? "open" : ""}`}>
         <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-        <li><Link to="/reportedItems" onClick={closeMenu}>Reported Items</Link></li>
+        <li><Link to="/lostItems" onClick={closeMenu}>Lost Items</Link></li>
+        <li><Link to="/foundItems" onClick={closeMenu}>Found Items</Link></li>
         <li><Link to="/reportNewItem" onClick={closeMenu}>Report an Item</Link></li>
       </ul>
     </nav>

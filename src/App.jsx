@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import React, { useState, useMemo } from 'react';
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import { Home } from './pages/home';
 import NewItemPage from './pages/NewItemPage';
 import { Index } from './pages/indexPage';
@@ -7,8 +7,6 @@ import ItemDetails from './pages/itemDetails';
 import Items from './pages/Items'
 import ItemClaim from './pages/ItemClaim';
 import ProfilePage from './pages/ProfilePage';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css'
 
@@ -43,7 +41,7 @@ function App() {
     }
   }
 
-  const router = createBrowserRouter([
+  const router = useMemo(() => createBrowserRouter([
 
     {
       path: "/",
@@ -63,11 +61,19 @@ function App() {
     },
     {
       path: "/reportedItems",
-      element: <Items isLoggedIn={!!token} />
+      element: <Navigate to="/lostItems" replace />
+    },
+    {
+      path: "/lostItems",
+      element: <Items isLoggedIn={!!token} itemType="lost" token={token} />
+    },
+    {
+      path: "/foundItems",
+      element: <Items isLoggedIn={!!token} itemType="found" token={token} />
     },
     {
       path: "/reportNewItem",
-      element: <NewItemPage isLoggedIn={!!token} />
+      element: <NewItemPage isLoggedIn={!!token} token={token} />
     },
     {
       path: "/SignUpPage",
@@ -75,7 +81,7 @@ function App() {
     },
     {
       path: "/items/:id/claim",
-      element: <ItemClaim isLoggedIn={!!token} />
+      element: <ItemClaim isLoggedIn={!!token} token={token} />
     },
     {
       path: "/profilePage",
@@ -85,7 +91,7 @@ function App() {
       path: "*",
       element: <NotFoundPage />
     }
-  ]);
+  ]), [token]);
 
   return (
     <div className="app">
@@ -93,22 +99,7 @@ function App() {
         Skip to main content
       </a>
 
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        role="alert"
-        aria-live="assertive"
-      />
-
-      <RouterProvider router={router} />
+      <RouterProvider router={router} key={token || "guest"} />
     </div>
   );
 }

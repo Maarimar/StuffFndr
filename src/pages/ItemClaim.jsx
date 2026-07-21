@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Header from "../shared/header";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import "../styles/ItemClaim.css";
 import imagePlaceholder from "../assets/placeholder.svg"
 
-const ItemClaim = ({ isLoggedIn = false }) => {
+const ItemClaim = ({ isLoggedIn = false, token = "" }) => {
   const { id } = useParams();
   const [currentItem, setCurrentItem] = useState({});
   const [proveOwnership, setProveOwnership] = useState("");
   const [error, setError] = useState(null);
-  const encodedToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjJkNzAzZWJhMzJmNDFjNzg5NTIwMWIiLCJ1c2VybmFtZSI6IlRyZWVTdGFuZCIsImlhdCI6MTcxNDI2OTgwMCwiZXhwIjoxNzE2ODYxODAwfQ.v1kpMaryjcNcDq-3QT-rHXGbT-RhF2UX0oFyq7he4Pw";
+  const [claimMessage, setClaimMessage] = useState("");
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
+
     const fetchItems = async () => {
       try {
         const response = await fetch("http://localhost:8000/api/v1/items", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${encodedToken}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
@@ -33,15 +35,14 @@ const ItemClaim = ({ isLoggedIn = false }) => {
         setCurrentItem(fetchedItem);
       } catch (fetchError) {
         setError(fetchError.message);
-        toast.error("Failed to fetch item");
       }
     };
     fetchItems();
-  }, [id]);
+  }, [id, token]);
 
   const handleSubmitClaim = (e) => {
     e.preventDefault();
-    toast.info("Claim submission is coming soon.");
+    setClaimMessage("Claim submission is coming soon.");
   };
 
   return (
@@ -73,6 +74,9 @@ const ItemClaim = ({ isLoggedIn = false }) => {
             <button type="submit" className="submitClaimButton">
               Submit Claim
             </button>
+            {claimMessage && (
+              <p className="claimMessage" role="status">{claimMessage}</p>
+            )}
           </form>
         )}
       </main>
