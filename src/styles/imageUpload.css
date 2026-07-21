@@ -1,22 +1,29 @@
+.defaultImgContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
 .defaultImg {
     height: 100px;
     width: 100px;
     border-radius: 100%;
-    margin-top: -20px;
-    margin-bottom: -5px;
+    object-fit: cover;
+}
+
+.uploadBtn {
+    border: 2px solid transparent;
+    background: var(--color-bg-page);
+    padding: var(--space-xs);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: calc(-1 * var(--space-lg));
+    margin-left: 5rem;
 }
 
 .editBtn {
     height: 15px;
     width: 15px;
-    position: relative;
-    left: 85px;
-    bottom: 30px;
-
-}
-
-.uploadBtn {
-    border: hidden;
-    background: white;
-    padding: 1px;
+    display: block;
 }

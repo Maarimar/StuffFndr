@@ -71,7 +71,16 @@ cd ffprac-StuffFindr-backend
 npm install
 ```
 
-Configure your environment variables (create a `.env` file based on the backend repo requirements, usually including MongoDB connection details and JWT secret).
+Create a `.env` file in the backend folder with:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_LIFETIME=30d
+PORT=8000
+```
+
+For local MongoDB, `MONGO_URI` is often `mongodb://127.0.0.1:27017/stufffindr`. For a free cloud database, create a cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 
 Start the API server:
 
@@ -109,6 +118,32 @@ The front-end currently calls the API at `http://localhost:8000/api/v1`.
 
 ---
 
+## Demo Test Account
+
+Use this demo account to explore the app without creating your own user.
+
+| Field | Value |
+|-------|-------|
+| Username | `demoUser` |
+| Password | `DemoPass1` |
+| Email | `demo@stufffindr.test` |
+
+### Create the demo user in your local database
+
+After the backend is running, open a third terminal from this repo and run:
+
+```bash
+npm run seed:test-user
+```
+
+This script creates the demo user in **your** local MongoDB. If the user already exists, it verifies login instead of failing.
+
+Then log in at [http://localhost:5173/LoginPage](http://localhost:5173/LoginPage) with the credentials above.
+
+> **Note:** This account exists only in the database you connect to locally (or in whatever environment you seed). It is meant for testing and demos, not production.
+
+---
+
 ## Available Scripts (Front-end)
 
 | Command | Description |
@@ -117,6 +152,7 @@ The front-end currently calls the API at `http://localhost:8000/api/v1`.
 | `npm run build` | Build production bundle |
 | `npm run preview` | Preview production build locally |
 | `npm run lint` | Run ESLint |
+| `npm run seed:test-user` | Create or verify the demo test user in your local backend |
 
 ---
 

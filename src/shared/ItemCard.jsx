@@ -1,23 +1,22 @@
 import React from "react";
 import placeHolder from "../assets/placeholder.svg"
 
+const ItemCard = ({ images, title, dateLostFound, dateReported, type, lost, description, location }) => {
+  const reportedDate = dateReported || dateLostFound;
+  const itemStatus = lost === true ? "Lost" : lost === false ? "Found" : (type || "");
+  const imageSrc = images || placeHolder;
+  const imageAlt = title ? `Photo of ${title}` : "Reported item photo";
 
-
-const ItemCard = ({images, title, dateLostFound, type,description, location }) =>{
-
-
-return (
-<div className="reportedItemsContainer" >
-   <div className="ItemCard">
-    <img className="itemPhoto" src={ placeHolder}/>
-    <h3 className="itemTitle">{title}</h3>
-    <p>{description}</p>
-    <p className="dateLostFound">Reported: {dateLostFound}</p>
-    <p>{type}</p>
-    <p>{location}</p>
-  </div>
-</div>
-)
+  return (
+    <article className="ItemCard">
+      <img className="itemPhoto" src={imageSrc} alt={imageAlt} />
+      <h2 className="itemTitle">{title}</h2>
+      {description && <p className="itemDescription">{description}</p>}
+      {reportedDate && <p className="dateLostFound">Reported: {reportedDate}</p>}
+      {itemStatus && <p className="itemStatus">{itemStatus}</p>}
+      {location && <p className="itemLocation">{location}</p>}
+    </article>
+  )
 };
 
 export default ItemCard;

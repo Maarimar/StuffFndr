@@ -1,33 +1,47 @@
-import React from "react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/HamburgerMenu.css"
 
+const MENU_ID = "main-navigation";
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const closeMenu = () => setIsOpen(false);
+  const toggleMenu = () => setIsOpen((open) => !open);
 
-  const toggleMenu = () => {
-    console.log("menu called")
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
 
   return (
-    <div className={`hamburger-menu ${isOpen ? 'close' : ''}`}>
-      <div
-        className= "hamburger-icon"
+    <nav className="hamburger-menu" aria-label="Main navigation">
+      <button
+        type="button"
+        className="hamburger-icon"
+        aria-expanded={isOpen}
+        aria-controls={MENU_ID}
+        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         onClick={toggleMenu}
       >
-        {isOpen? <>&#x2715;</> : <>&#9776;</>}
-        </div>
-      <ul className={`list ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/reportedItems">Reported Items</Link></li>
-        <li><Link to="/reportNewItem">Report an Item</Link></li>
-  
+        <span aria-hidden="true">{isOpen ? "\u2715" : "\u2630"}</span>
+      </button>
+      <ul id={MENU_ID} className={`list ${isOpen ? "open" : ""}`}>
+        <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+        <li><Link to="/reportedItems" onClick={closeMenu}>Reported Items</Link></li>
+        <li><Link to="/reportNewItem" onClick={closeMenu}>Report an Item</Link></li>
       </ul>
-    </div>
+    </nav>
   );
 };
 

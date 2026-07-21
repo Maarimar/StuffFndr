@@ -1,75 +1,117 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+.reportedItemsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    list-style: none;
+    padding: var(--space-md);
+    margin: 0;
+}
 
-.reportedItemsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 0rem 0rem 15rem 1rem;
+.itemCardLink {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.itemCardLink:focus-visible {
+    outline-offset: 4px;
 }
 
 .ItemCard {
-  width: 143px;
-  height: 146px;
-  margin-top: 10px;
-  border-spacing: 2rem;
+    width: 143px;
+    min-height: 146px;
+    margin-top: var(--space-sm);
 }
 
 .ItemCard img {
-  width: 8rem;
-  height: 191px;
-  border-radius: 7px;
-  
+    width: 8rem;
+    height: auto;
+    min-height: 120px;
+    object-fit: cover;
+    border-radius: 7px;
 }
 
 .itemTitle {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  font-family: "Poppins";
-  color: #0C2D57;
-  font-weight: 400;
-  font-size: 14px;
-  text-decoration: none;
-  
+    margin: var(--space-sm) 0 0;
+    font-family: Poppins, sans-serif;
+    color: var(--color-text-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
 }
 
-.linkStyle{
-text-decoration: none;
+.itemDescription,
+.itemStatus,
+.itemLocation {
+    margin: var(--space-xs, 0.25rem) 0 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
 }
 
 .dateLostFound {
-  position: relative;
-  margin-top: 0px;
-  color: #0C2D57;
-  font-family: "Poppins";
-  font-weight: 300;
-  font-size: 12px;
+    margin: var(--space-xs, 0.25rem) 0 0;
+    color: var(--color-text-primary);
+    font-family: Poppins, sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
 }
 
-.searchContainer{
-  display: ruby-text ;
+.searchContainer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+    min-width: 200px;
 }
 
-.searchField{
-  margin: 2rem 0rem 0rem 0rem;
-  background: #E5E5E5;
-  border-radius: 33px;
-  width: 268px;
-  height: 37px;
-  font-weight: 400;
-  font-size: 18px;
-  color: #666666;
-  font-style: normal;
+.searchField {
+    margin: var(--space-xl) 0 0;
+    background: var(--color-bg-input);
+    border: 1px solid transparent;
+    border-radius: var(--input-radius);
+    width: 100%;
+    max-width: 268px;
+    min-height: 40px;
+    padding: var(--space-sm) var(--space-md);
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
 }
 
-.noResultsMessage{
-  padding: 10rem 0rem 0rem 0rem;
- font-size: 2em; 
- text-align: center;
+.clearFilterButton,
+.button {
+    margin-top: var(--space-xl);
+    min-height: 40px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-brand-primary);
+    color: var(--color-text-on-dark);
+    border: none;
+    border-radius: var(--button-radius);
+    font-family: Poppins, sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
-.LostFoundButtonContainer{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 2rem 1rem 0rem 1rem;
+.clearFilterButton {
+    background: var(--color-text-secondary);
+}
+
+.button[aria-pressed="true"] {
+    background: var(--color-brand-hover);
+    outline: 2px solid var(--color-text-accent);
+}
+
+.noResultsMessage {
+    padding: var(--space-xl) var(--space-md);
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.LostFoundButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-xl) var(--space-md) 0;
 }
