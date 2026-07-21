@@ -9,6 +9,23 @@
     margin: 0 auto;
 }
 
+.formSuccess,
+.formError {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto var(--space-md);
+    text-align: center;
+    font-size: 1rem;
+}
+
+.formSuccess {
+    color: var(--color-success);
+}
+
+.formError {
+    color: var(--color-error);
+}
+
 .imageFieldset {
     border: none;
     padding: 0;

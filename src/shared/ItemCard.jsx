@@ -1,7 +1,7 @@
 import React from "react";
 import placeHolder from "../assets/placeholder.svg"
 
-const ItemCard = ({ images, title, dateLostFound, dateReported, type, lost, description, location }) => {
+const ItemCard = ({ images, title, dateLostFound, dateReported, type, lost, description, location, reportedByUsername }) => {
   const reportedDate = dateReported || dateLostFound;
   const itemStatus = lost === true ? "Lost" : lost === false ? "Found" : (type || "");
   const imageSrc = images || placeHolder;
@@ -12,6 +12,9 @@ const ItemCard = ({ images, title, dateLostFound, dateReported, type, lost, desc
       <img className="itemPhoto" src={imageSrc} alt={imageAlt} />
       <h2 className="itemTitle">{title}</h2>
       {description && <p className="itemDescription">{description}</p>}
+      {reportedByUsername && (
+        <p className="itemReporter">Reported by: {reportedByUsername}</p>
+      )}
       {reportedDate && <p className="dateLostFound">Reported: {reportedDate}</p>}
       {itemStatus && <p className="itemStatus">{itemStatus}</p>}
       {location && <p className="itemLocation">{location}</p>}

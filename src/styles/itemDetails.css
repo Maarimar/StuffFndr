@@ -74,6 +74,11 @@
   height: auto;
 }
 
+.backToItemsLink {
+  margin: var(--space-lg) 0;
+  text-align: center;
+}
+
 .claimButtonContainer {
   display: flex;
   align-items: center;

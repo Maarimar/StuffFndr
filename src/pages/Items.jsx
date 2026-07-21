@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from "react";
 import Header from "../shared/header";
 import ItemCard from "../shared/ItemCard";
-import { toast } from "react-toastify";
 import "../styles/Items.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { getReporterUsername } from "../util/getReporterUsername";
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjJkNzAzZWJhMzJmNDFjNzg5NTIwMWIiLCJ1c2VybmFtZSI6IlRyZWVTdGFuZCIsImlhdCI6MTcxNDI2OTgwMCwiZXhwIjoxNzE2ODYxODAwfQ.v1kpMaryjcNcDq-3QT-rHXGbT-RhF2UX0oFyq7he4Pw";
-const encodedToken = encodeURIComponent(token);
+const ReportItemButton = () => (
+  <div className="reportItemAction">
+    <Link to="/reportNewItem" className="reportItemBtn">
+      Report an Item
+    </Link>
+  </div>
+);
 
-const Items = ({ isLoggedIn = false }) => {
+const Items = ({ isLoggedIn = false, itemType = "lost", token = "" }) => {
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState("");
-  const [lostFilter, setLostFilter] = useState(null);
+  const [fetchError, setFetchError] = useState("");
+  const isLostPage = itemType === "lost";
+  const pageTitle = isLostPage ? "Lost Items" : "Found Items";
+  const searchInputId = isLostPage ? "lost-items-search" : "found-items-search";
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+    if (token) {
+      fetchItems();
+    }
+  }, [token]);
 
   const fetchItems = async () => {
+    if (!token) {
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8000/api/v1/items", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${encodedToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -31,8 +44,9 @@ const Items = ({ isLoggedIn = false }) => {
       }
       const data = await response.json();
       setItems(data.items || []);
+      setFetchError("");
     } catch (error) {
-      toast.error("Failed to fetch items");
+      setFetchError("Failed to fetch items. Please try again.");
     }
   };
 
@@ -44,16 +58,12 @@ const Items = ({ isLoggedIn = false }) => {
     setFilter("");
   };
 
-  const handleLostFilter = (lostValue) => {
-    setLostFilter((current) => (current === lostValue ? null : lostValue));
-  };
-
   const filteredItems = Array.isArray(items)
     ? items.filter((item) => {
         const lowercaseFilter = filter.toLowerCase();
         const lowercaseTitle = item.title.toLowerCase();
         return (
-          (lostFilter === null || item.lost === lostFilter) &&
+          item.lost === isLostPage &&
           ((item._id && item._id.toLowerCase().includes(lowercaseFilter)) ||
             (item.location &&
               item.location.toLowerCase().includes(lowercaseFilter)) ||
@@ -66,63 +76,64 @@ const Items = ({ isLoggedIn = false }) => {
 
   return (
     <>
-      <Header pageTitle="Reported Items" isLoggedIn={isLoggedIn} />
+      <Header pageTitle={pageTitle} isLoggedIn={isLoggedIn} />
       <main id="main-content">
-        {isLoggedIn && (
-          <div className="reportItemAction">
-            <Link to="/reportNewItem" className="reportItemBtn">
-              Report an Item
-            </Link>
-          </div>
+        <nav className="itemsTypeNav" aria-label="Browse lost or found items">
+          <Link
+            to="/lostItems"
+            className={`itemsTypeNavLink ${isLostPage ? "itemsTypeNavLink--active" : ""}`}
+            aria-current={isLostPage ? "page" : undefined}
+          >
+            Lost Items
+          </Link>
+          <Link
+            to="/foundItems"
+            className={`itemsTypeNavLink ${!isLostPage ? "itemsTypeNavLink--active" : ""}`}
+            aria-current={!isLostPage ? "page" : undefined}
+          >
+            Found Items
+          </Link>
+        </nav>
+
+        {fetchError && (
+          <p className="itemsFetchError" role="alert">{fetchError}</p>
         )}
-        <section aria-label="Filter and search reported items">
-          <div className="LostFoundButtonContainer">
-            <button
-              className="button"
-              type="button"
-              aria-pressed={lostFilter === true}
-              onClick={() => handleLostFilter(true)}
-            >
-              Lost
-            </button>
-            <div className="searchContainer">
-              <label className="sr-only" htmlFor="items-search">
-                Search reported items by title, date, or location
-              </label>
-              <input
-                className="searchField"
-                type="search"
-                id="items-search"
-                placeholder="Search: Title, Date, or Location"
-                value={filter}
-                onChange={handleFilterChange}
-              />
-              {filter && (
-                <button
-                  className="clearFilterButton"
-                  type="button"
-                  onClick={handleClearFilter}
-                  aria-label="Clear search filter"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            <button
-              className="button"
-              type="button"
-              aria-pressed={lostFilter === false}
-              onClick={() => handleLostFilter(false)}
-            >
-              Found
-            </button>
+
+        <section aria-label={`Search ${pageTitle.toLowerCase()}`}>
+          <div className="itemsSearchContainer">
+            <label className="sr-only" htmlFor={searchInputId}>
+              Search {pageTitle.toLowerCase()} by title, date, or location
+            </label>
+            <input
+              className="searchField"
+              type="search"
+              id={searchInputId}
+              placeholder="Search: Title, Date, or Location"
+              value={filter}
+              onChange={handleFilterChange}
+            />
+            {filter && (
+              <button
+                className="clearFilterButton"
+                type="button"
+                onClick={handleClearFilter}
+                aria-label="Clear search filter"
+              >
+                Clear
+              </button>
+            )}
           </div>
         </section>
 
+        {isLoggedIn && filteredItems.length > 0 && <ReportItemButton />}
+
         {filteredItems.length === 0 ? (
-          <p className="noResultsMessage" role="status" aria-live="polite">
-            No results found
-          </p>
+          <>
+            <p className="noResultsMessage" role="status" aria-live="polite">
+              No {isLostPage ? "lost" : "found"} items found
+            </p>
+            {isLoggedIn && <ReportItemButton />}
+          </>
         ) : (
           <ul className="reportedItemsList">
             {filteredItems.map((item) => (
@@ -130,7 +141,7 @@ const Items = ({ isLoggedIn = false }) => {
                 <Link
                   to={`/items/${item._id}`}
                   className="itemCardLink"
-                  aria-label={`View ${item.title}, ${item.lost ? "lost" : "found"} in ${item.location}`}
+                  aria-label={`View ${item.title}, ${item.lost ? "lost" : "found"} in ${item.location}, reported by ${getReporterUsername(item) || "unknown user"}`}
                 >
                   <ItemCard
                     title={item.title}
@@ -139,6 +150,7 @@ const Items = ({ isLoggedIn = false }) => {
                     lost={item.lost}
                     dateReported={item.dateReported}
                     images={item.images}
+                    reportedByUsername={getReporterUsername(item)}
                   />
                 </Link>
               </li>

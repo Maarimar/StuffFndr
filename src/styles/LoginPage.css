@@ -105,3 +105,12 @@
 .logInBtn:hover {
     background: var(--color-brand-hover);
 }
+
+.loginError {
+    width: 100%;
+    max-width: 285px;
+    margin: var(--space-sm) 0 0;
+    text-align: center;
+    color: var(--color-error);
+    font-size: 0.9375rem;
+}

@@ -41,10 +41,16 @@
 
 .itemDescription,
 .itemStatus,
-.itemLocation {
+.itemLocation,
+.itemReporter {
     margin: var(--space-xs, 0.25rem) 0 0;
     font-size: 0.8125rem;
     color: var(--color-text-secondary);
+}
+
+.itemReporter {
+    font-weight: 500;
+    color: var(--color-text-primary);
 }
 
 .dateLostFound {
@@ -55,21 +61,66 @@
     font-size: 0.75rem;
 }
 
-.searchContainer {
+.itemsFetchError {
+    padding: 0 var(--space-md);
+    text-align: center;
+    color: var(--color-error);
+    font-size: 1rem;
+}
+
+.itemsTypeNav {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-md) 0;
+}
+
+.itemsTypeNavLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--button-radius);
+    background: var(--color-bg-input);
+    color: var(--color-text-primary);
+    font-family: Poppins, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.itemsTypeNavLink--active {
+    background: var(--color-brand-primary);
+    color: var(--color-text-on-dark);
+}
+
+.itemsTypeNavLink:hover,
+.itemsTypeNavLink:focus-visible {
+    color: var(--color-text-primary);
+}
+
+.itemsTypeNavLink--active:hover,
+.itemsTypeNavLink--active:focus-visible {
+    background: var(--color-brand-hover);
+    color: var(--color-text-on-dark);
+}
+
+.itemsSearchContainer {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-sm);
-    flex: 1;
-    min-width: 200px;
+    padding: var(--space-md);
+    flex-wrap: wrap;
 }
 
 .searchField {
-    margin: var(--space-xl) 0 0;
     background: var(--color-bg-input);
     border: 1px solid transparent;
     border-radius: var(--input-radius);
     width: 100%;
-    max-width: 268px;
+    max-width: 320px;
     min-height: 40px;
     padding: var(--space-sm) var(--space-md);
     font-weight: 400;
@@ -77,12 +128,10 @@
     color: var(--color-text-secondary);
 }
 
-.clearFilterButton,
-.button {
-    margin-top: var(--space-xl);
+.clearFilterButton {
     min-height: 40px;
     padding: var(--space-sm) var(--space-md);
-    background: var(--color-brand-primary);
+    background: var(--color-text-secondary);
     color: var(--color-text-on-dark);
     border: none;
     border-radius: var(--button-radius);
@@ -91,29 +140,47 @@
     cursor: pointer;
 }
 
-.clearFilterButton {
-    background: var(--color-text-secondary);
-}
-
-.button[aria-pressed="true"] {
-    background: var(--color-brand-hover);
-    outline: 2px solid var(--color-text-accent);
-}
-
 .noResultsMessage {
-    padding: var(--space-xl) var(--space-md);
+    padding: var(--space-xl) var(--space-md) var(--space-md);
     font-size: 1.5rem;
     text-align: center;
     color: var(--color-text-primary);
 }
 
-.LostFoundButtonContainer {
+.reportItemAction {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-md);
-    padding: var(--space-xl) var(--space-md) 0;
+    justify-content: center;
+    padding: var(--space-md);
+}
+
+.reportItemAction + .reportedItemsList {
+    padding-top: 0;
+}
+
+.noResultsMessage + .reportItemAction {
+    padding-top: 0;
+}
+
+.reportItemBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-brand-primary);
+    color: var(--color-text-on-dark);
+    border-radius: var(--button-radius);
+    font-family: Poppins, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.reportItemBtn:hover,
+.reportItemBtn:focus-visible {
+    background: var(--color-brand-hover);
+    color: var(--color-text-on-dark);
 }
 
 .reportItemAction {
